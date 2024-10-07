@@ -1,0 +1,5 @@
+name: watut
+version: '3.0.0'
+main: me.slide.watut.WatutPlugin
+api-version: '1.21.1'
+folia-supported: true
