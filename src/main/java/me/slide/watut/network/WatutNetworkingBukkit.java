@@ -19,21 +19,19 @@ public class WatutNetworkingBukkit {
     public static String NBTDataPlayerTypingAmp = "playerTypingAmp";
     public static String NBTDataPlayerScreenRenderCalls = "screenRenderCalls";
     public static String NBTDataPlayerIdleTicks = "playerIdleTicks";
-    //a bit of a heavy way to sync a server config to client, but itll do for now
     public static String NBTDataPlayerTicksToGoIdle = "playerTicksToGoIdle";
     public static String NBTDataPlayerMouseX = "playerMouseX";
     public static String NBTDataPlayerMouseY = "playerMouseY";
     public static String NBTDataPlayerMousePressed = "playerMousePressed";
 
     public static void serverSendToClientAll(CompoundTag nbt) {
-        FriendlyByteBuf send = new FriendlyByteBuf(Unpooled.buffer(256));
+        FriendlyByteBuf send = new FriendlyByteBuf(Unpooled.buffer(0));
         send.writeNbt(nbt);
 
         int packetSize = send.readableBytes();
         byte[] data = new byte[packetSize];
         send.getBytes(0, data);
 
-        //Bukkit.getLogger().info(String.format("Sending packet with size: " + send.array().length + "b / " + send.array().length/1024 + "kb" + nbt.toString()));
         Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data));
     }
 
@@ -56,7 +54,6 @@ public class WatutNetworkingBukkit {
         byte[] data = new byte[packetSize];
         send.getBytes(0, data);
 
-        //player.sendPluginMessage(Watut.getInstance(), WatutNetworking.NBT_PACKET_ID, send.array());
         //TEMP
         Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data));
     }

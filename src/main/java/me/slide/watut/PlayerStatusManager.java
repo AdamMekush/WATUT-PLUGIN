@@ -44,8 +44,4 @@ public class PlayerStatusManager {
         status.setPressing(pressed);
     }
 
-    public void playerLoggedIn(Player player) {
-
-    }
-
 }
