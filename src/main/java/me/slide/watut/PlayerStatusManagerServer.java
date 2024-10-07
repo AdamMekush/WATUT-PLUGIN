@@ -13,10 +13,8 @@ import java.util.UUID;
 
 public class PlayerStatusManagerServer extends PlayerStatusManager implements Listener {
 
-    @Override
     public void tickPlayer(Player player) {
         getStatus(player).setTicksToMarkPlayerIdleSyncedForClient(WatutPlugin.getInstance().getConfig().getInt("idle-ticks"));
-        super.tickPlayer(player);
     }
 
     public void receiveAny(Player player, CompoundTag data) {

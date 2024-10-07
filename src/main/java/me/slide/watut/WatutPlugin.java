@@ -36,7 +36,7 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
     }
 
     @Override
-    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] bytes) {
+    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte @NotNull [] bytes) {
         FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
         CompoundTag compoundTag = friendlyByteBuf.readNbt();
         compoundTag.putString(WatutNetworkingBukkit.NBTDataPlayerUUID, player.getUniqueId().toString());

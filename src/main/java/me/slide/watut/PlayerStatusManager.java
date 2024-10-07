@@ -11,10 +11,6 @@ public class PlayerStatusManager {
 
     protected int nearbyPlayerDataSendDist = 10;
 
-    public void tickPlayer(Player player) {
-
-    }
-
     public PlayerStatus getStatus(Player player) {
         return getStatus(player.getUniqueId());
     }
