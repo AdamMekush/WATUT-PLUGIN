@@ -1,5 +1,8 @@
 name: watut
-version: '3.0.0'
+version: '1.0.0'
 main: me.slide.watut.WatutPlugin
-api-version: '1.21.1'
+author: Slide_AM
+description: Bukkit bridge for What Are They Up To (Watut)
+website: https://github.com/AdamMekush/WATUT-PLUGIN
+api-version: '1.20'
 folia-supported: true

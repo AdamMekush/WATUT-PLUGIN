@@ -54,7 +54,6 @@ public class WatutNetworkingBukkit {
         byte[] data = new byte[packetSize];
         send.getBytes(0, data);
 
-        //TEMP
         Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data));
     }
 }
