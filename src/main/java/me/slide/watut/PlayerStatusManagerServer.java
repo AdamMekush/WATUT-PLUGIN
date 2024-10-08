@@ -21,12 +21,12 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
         data.putString(WatutNetworkingBukkit.NBTDataPlayerUUID, player.getUniqueId().toString());
 
         if (data.contains(WatutNetworkingBukkit.NBTDataPlayerGuiStatus)) {
-            PlayerStatus.PlayerGuiState playerGuiState = PlayerStatus.PlayerGuiState.get(data.getInt(WatutNetworkingBukkit.NBTDataPlayerGuiStatus));
+            PlayerGuiState playerGuiState = PlayerGuiState.get(data.getInt(WatutNetworkingBukkit.NBTDataPlayerGuiStatus));
             getStatus(player).setPlayerGuiState(playerGuiState);
         }
 
         if (data.contains(WatutNetworkingBukkit.NBTDataPlayerChatStatus)) {
-            PlayerStatus.PlayerChatState state = PlayerStatus.PlayerChatState.get(data.getInt(WatutNetworkingBukkit.NBTDataPlayerChatStatus));
+            PlayerChatState state = PlayerChatState.get(data.getInt(WatutNetworkingBukkit.NBTDataPlayerChatStatus));
             getStatus(player).setPlayerChatState(state);
         }
 
@@ -76,7 +76,7 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
     @EventHandler
     public void playerLoggedIn(PlayerJoinEvent event){
         for (Map.Entry<UUID, PlayerStatus> entry : lookupPlayerToStatus.entrySet()) {
-            WatutPlugin.getInstance().getLogger().info("sending update all packet for " + entry.getKey().toString() + " to " + event.getPlayer().getDisplayName() + " with status " + PlayerStatus.PlayerGuiState.get(entry.getValue().getNbtCache().getInt(WatutNetworkingBukkit.NBTDataPlayerGuiStatus)));
+            WatutPlugin.getInstance().getLogger().info("sending update all packet for " + entry.getKey().toString() + " to " + event.getPlayer().getDisplayName() + " with status " + PlayerGuiState.get(entry.getValue().getNbtCache().getInt(WatutNetworkingBukkit.NBTDataPlayerGuiStatus)));
             WatutNetworkingBukkit.serverSendToClientPlayer(entry.getValue().getNbtCache(), event.getPlayer());
         }
     }
