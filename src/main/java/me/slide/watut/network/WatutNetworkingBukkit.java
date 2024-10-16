@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static me.slide.watut.WatutPlugin.isAbove1_20_2OrEqual;
+
 public class WatutNetworkingBukkit {
 
     public static final String NBT_PACKET_ID = "watut:nbt";
@@ -29,7 +31,12 @@ public class WatutNetworkingBukkit {
     public static void serverSendToClientAll(CompoundBinaryTag nbt) {
         try {
             ByteArrayOutputStream data = new ByteArrayOutputStream();
-            BinaryTagIO.writer().writeNameless(nbt, data);
+            if(isAbove1_20_2OrEqual()){
+                BinaryTagIO.writer().writeNameless(nbt, data);
+            }
+            else{
+                BinaryTagIO.writeOutputStream(nbt, data);
+            }
 
             Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data.toByteArray()));
             data.close();
@@ -41,7 +48,12 @@ public class WatutNetworkingBukkit {
     public static void serverSendToClientPlayer(CompoundBinaryTag nbt, Player player) {
         try {
             ByteArrayOutputStream data = new ByteArrayOutputStream();
-            BinaryTagIO.writer().writeNameless(nbt, data);
+            if(isAbove1_20_2OrEqual()){
+                BinaryTagIO.writer().writeNameless(nbt, data);
+            }
+            else{
+                BinaryTagIO.writeOutputStream(nbt, data);
+            }
 
             player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data.toByteArray());
             data.close();
@@ -53,7 +65,12 @@ public class WatutNetworkingBukkit {
     public static void serverSendToClientNear(CompoundBinaryTag nbt, Location location, int i, World world) {
         try {
             ByteArrayOutputStream data = new ByteArrayOutputStream();
-            BinaryTagIO.writer().writeNameless(nbt, data);
+            if(isAbove1_20_2OrEqual()){
+                BinaryTagIO.writer().writeNameless(nbt, data);
+            }
+            else{
+                BinaryTagIO.writeOutputStream(nbt, data);
+            }
 
             world.getNearbyEntities(location, i, i, i).forEach(entity -> {
                 if(entity instanceof Player){

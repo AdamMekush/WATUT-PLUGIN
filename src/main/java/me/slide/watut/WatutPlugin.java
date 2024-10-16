@@ -3,6 +3,7 @@ package me.slide.watut;
 import me.slide.watut.network.WatutNetworkingBukkit;
 import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +20,7 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onEnable() {
+        Metrics metrics = new Metrics(this, 23632);
         this.getServer().getMessenger().registerIncomingPluginChannel(this, WatutNetworkingBukkit.NBT_PACKET_ID, this);
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, WatutNetworkingBukkit.NBT_PACKET_ID);
 
@@ -40,8 +42,14 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte @NotNull [] bytes) {
         try {
+            CompoundBinaryTag nbt;
             ByteArrayInputStream byteArrayOutputStream = new ByteArrayInputStream(bytes);
-            CompoundBinaryTag nbt = BinaryTagIO.unlimitedReader().readNameless(byteArrayOutputStream);
+            if(isAbove1_20_2OrEqual()){
+                nbt = BinaryTagIO.unlimitedReader().readNameless(byteArrayOutputStream);
+            }
+            else {
+                nbt = BinaryTagIO.readInputStream(byteArrayOutputStream);
+            }
             playerStatusManagerServer.receiveAny(player, nbt);
         } catch (IOException e) {
             getLogger().severe(e.toString());
@@ -54,6 +62,14 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
 
     public PlayerStatusManagerServer getPlayerStatusManagerServer(){
         return playerStatusManagerServer;
+    }
+
+    public static boolean isAbove1_20_2OrEqual(){
+        String version = Bukkit.getBukkitVersion();
+        String[] versionSplit = version.split("\\.");
+        int major = Integer.parseInt(versionSplit[0]);
+        int minor = Integer.parseInt(versionSplit[1]);
+        return (major > 1 || (major == 1 && minor >= 20 && version.contains("2")));
     }
 
 }

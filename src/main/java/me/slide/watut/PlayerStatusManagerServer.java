@@ -35,12 +35,12 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
             data = CompoundBinaryTag.builder().put(data).putInt(WatutNetworkingBukkit.NBTDataPlayerTicksToGoIdle, WatutPlugin.getInstance().getConfig().getInt("idle-ticks")).build();
         }
 
-        //if (data.keySet().contains(WatutNetworkingBukkit.NBTDataPlayerMouseX)) {
-        //    float x = data.getFloat(WatutNetworkingBukkit.NBTDataPlayerMouseX);
-        //    float y = data.getFloat(WatutNetworkingBukkit.NBTDataPlayerMouseY);
-        //    boolean pressed = data.getBoolean(WatutNetworkingBukkit.NBTDataPlayerMousePressed);
-        //    setMouse(player.getUniqueId(), x, y, pressed);
-        //}
+        if (data.keySet().contains(WatutNetworkingBukkit.NBTDataPlayerMouseX)) {
+            float x = data.getFloat(WatutNetworkingBukkit.NBTDataPlayerMouseX);
+            float y = data.getFloat(WatutNetworkingBukkit.NBTDataPlayerMouseY);
+            boolean pressed = data.getBoolean(WatutNetworkingBukkit.NBTDataPlayerMousePressed);
+            setMouse(player.getUniqueId(), x, y, pressed);
+        }
 
         if (data.keySet().contains(WatutNetworkingBukkit.NBTDataPlayerScreenRenderCalls)) {}
 
