@@ -1,15 +1,17 @@
 package me.slide.watut;
 
-import io.netty.buffer.Unpooled;
 import me.slide.watut.network.WatutNetworkingBukkit;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.kyori.adventure.nbt.BinaryTagIO;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public final class WatutPlugin extends JavaPlugin implements PluginMessageListener {
 
@@ -37,10 +39,13 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte @NotNull [] bytes) {
-        FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
-        CompoundTag compoundTag = friendlyByteBuf.readNbt();
-        compoundTag.putString(WatutNetworkingBukkit.NBTDataPlayerUUID, player.getUniqueId().toString());
-        playerStatusManagerServer.receiveAny(player, compoundTag);
+        try {
+            ByteArrayInputStream byteArrayOutputStream = new ByteArrayInputStream(bytes);
+            CompoundBinaryTag nbt = BinaryTagIO.unlimitedReader().readNameless(byteArrayOutputStream);
+            playerStatusManagerServer.receiveAny(player, nbt);
+        } catch (IOException e) {
+            getLogger().severe(e.toString());
+        }
     }
 
     public static WatutPlugin getInstance(){

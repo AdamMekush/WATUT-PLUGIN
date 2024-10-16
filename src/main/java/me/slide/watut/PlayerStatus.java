@@ -1,13 +1,13 @@
 package me.slide.watut;
 
-import net.minecraft.nbt.CompoundTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 
 public class PlayerStatus {
 
     private int ticksSinceLastAction = 0;
     private int ticksToMarkPlayerIdleSyncedForClient = 20*60*5;
 
-    private CompoundTag nbtCache = new CompoundTag();
+    private CompoundBinaryTag nbtCache = CompoundBinaryTag.builder().build();
 
     public PlayerStatus(PlayerGuiState playerGuiState) {
     }
@@ -32,8 +32,12 @@ public class PlayerStatus {
         return ticksSinceLastAction > ticksToMarkPlayerIdleSyncedForClient;
     }
 
-    public CompoundTag getNbtCache() {
+    public CompoundBinaryTag getNbtCache() {
         return nbtCache;
+    }
+
+    public void mergeNbtCache(CompoundBinaryTag data) {
+        nbtCache = CompoundBinaryTag.builder().put(nbtCache).put(data).build();
     }
 
     public void setTicksToMarkPlayerIdleSyncedForClient(int ticksToMarkPlayerIdleSyncedForClient) {

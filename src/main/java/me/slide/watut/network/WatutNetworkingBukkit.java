@@ -1,13 +1,15 @@
 package me.slide.watut.network;
 
-import io.netty.buffer.Unpooled;
 import me.slide.watut.WatutPlugin;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.kyori.adventure.nbt.BinaryTagIO;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class WatutNetworkingBukkit {
 
@@ -24,36 +26,43 @@ public class WatutNetworkingBukkit {
     public static String NBTDataPlayerMouseY = "playerMouseY";
     public static String NBTDataPlayerMousePressed = "playerMousePressed";
 
-    public static void serverSendToClientAll(CompoundTag nbt) {
-        FriendlyByteBuf send = new FriendlyByteBuf(Unpooled.buffer(0));
-        send.writeNbt(nbt);
+    public static void serverSendToClientAll(CompoundBinaryTag nbt) {
+        try {
+            ByteArrayOutputStream data = new ByteArrayOutputStream();
+            BinaryTagIO.writer().writeNameless(nbt, data);
 
-        int packetSize = send.readableBytes();
-        byte[] data = new byte[packetSize];
-        send.getBytes(0, data);
-
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data));
+            Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data.toByteArray()));
+            data.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void serverSendToClientPlayer(CompoundTag nbt, Player player) {
-        FriendlyByteBuf send = new FriendlyByteBuf(Unpooled.buffer(0));
-        send.writeNbt(nbt);
+    public static void serverSendToClientPlayer(CompoundBinaryTag nbt, Player player) {
+        try {
+            ByteArrayOutputStream data = new ByteArrayOutputStream();
+            BinaryTagIO.writer().writeNameless(nbt, data);
 
-        int packetSize = send.readableBytes();
-        byte[] data = new byte[packetSize];
-        send.getBytes(0, data);
-
-        player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data);
+            player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data.toByteArray());
+            data.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void serverSendToClientNear(CompoundTag nbt, Location location, int i, World world) {
-        FriendlyByteBuf send = new FriendlyByteBuf(Unpooled.buffer());
-        send.writeNbt(nbt);
+    public static void serverSendToClientNear(CompoundBinaryTag nbt, Location location, int i, World world) {
+        try {
+            ByteArrayOutputStream data = new ByteArrayOutputStream();
+            BinaryTagIO.writer().writeNameless(nbt, data);
 
-        int packetSize = send.readableBytes();
-        byte[] data = new byte[packetSize];
-        send.getBytes(0, data);
-
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data));
+            world.getNearbyEntities(location, i, i, i).forEach(entity -> {
+                if(entity instanceof Player){
+                    ((Player) entity).sendPluginMessage(WatutPlugin.getInstance(), WatutNetworkingBukkit.NBT_PACKET_ID, data.toByteArray());
+                }
+            });
+            data.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
