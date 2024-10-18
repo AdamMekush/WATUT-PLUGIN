@@ -16,21 +16,12 @@ public class PlayerStatusManager {
     }
 
     public PlayerStatus getStatus(UUID uuid) {
-        return getStatus(uuid, false);
-    }
-
-    public PlayerStatus getStatus(UUID uuid, boolean local) {
-        if (local) return getStatusLocal();
         PlayerStatus status = lookupPlayerToStatus.get(uuid);
         if (status == null) {
             status = new PlayerStatus(PlayerGuiState.NONE);
             lookupPlayerToStatus.put(uuid, status);
         }
         return status;
-    }
-
-    public PlayerStatus getStatusLocal() {
-        return null;
     }
 
     public void setMouse(UUID uuid, float x, float y, boolean pressed) {
