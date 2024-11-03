@@ -14,7 +14,7 @@ import java.net.URL;
 public class UpdateChecker {
     private final JavaPlugin plugin;
     private String modrinthProjectId;
-    private final Gson gson = new Gson();;
+    private final Gson gson = new Gson();
     private boolean isOutdated = false;
 
     public UpdateChecker(JavaPlugin plugin) {

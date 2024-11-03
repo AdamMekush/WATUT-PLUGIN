@@ -8,12 +8,12 @@ import java.util.Map;
 
 @SerializableAs("Config")
 public class Config implements ConfigurationSerializable {
-    private Integer version;
-    private Boolean update;
-    private Integer idleTicks;
-    private Boolean broadcastEnabled;
-    private String idleMessage;
-    private String busyMessage;
+    private final Integer version;
+    private final Boolean update;
+    private final Integer idleTicks;
+    private final Boolean broadcastEnabled;
+    private final String idleMessage;
+    private final String busyMessage;
 
     public Config(int version, boolean update, int idleTicks, boolean broadcastEnabled, String idleMessage, String busyMessage) {
         this.version = version;
