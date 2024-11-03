@@ -9,6 +9,7 @@ softdepend: ["PlaceholderAPI"]
 
 commands:
   watut:
-    description: Reload WATUT config.
+    description: "Reloads the WATUT plugin configuration file. Use this command to apply any changes made to the config without restarting the server."
     usage: /<command>
     permission: op
+    permission-message: "You do not have permission to use this command."
