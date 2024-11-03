@@ -1,8 +1,14 @@
-name: watut
-version: '1.0.0'
+name: WatutPlugin
+version: '2.0.0'
 main: me.slide.watut.WatutPlugin
 author: Slide_AM
 description: Bukkit bridge for What Are They Up To (Watut)
 website: https://github.com/AdamMekush/WATUT-PLUGIN
 api-version: '1.16'
-folia-supported: true
+softdepend: ["PlaceholderAPI"]
+
+commands:
+  watut:
+    description: Reload WATUT config.
+    usage: /<command>
+    permission: op

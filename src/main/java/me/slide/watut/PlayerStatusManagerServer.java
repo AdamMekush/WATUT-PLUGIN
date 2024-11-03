@@ -1,12 +1,15 @@
 package me.slide.watut;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.slide.watut.network.WatutNetworkingBukkit;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.Map;
 import java.util.UUID;
@@ -14,7 +17,7 @@ import java.util.UUID;
 public class PlayerStatusManagerServer extends PlayerStatusManager implements Listener {
 
     public void tickPlayer(Player player) {
-        getStatus(player).setTicksToMarkPlayerIdleSyncedForClient(WatutPlugin.getInstance().getConfig().getInt("idle-ticks"));
+        getStatus(player).setTicksToMarkPlayerIdleSyncedForClient(WatutPlugin.getInstance().getConfiguration().getIdleTicks());
     }
 
     public void receiveAny(Player player, CompoundBinaryTag data) {
@@ -31,8 +34,10 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
         }
 
         if (data.keySet().contains(WatutNetworkingBukkit.NBTDataPlayerIdleTicks)) {
-            handleIdleState(player, data.getInt(WatutNetworkingBukkit.NBTDataPlayerIdleTicks));
-            data = CompoundBinaryTag.builder().put(data).putInt(WatutNetworkingBukkit.NBTDataPlayerTicksToGoIdle, WatutPlugin.getInstance().getConfig().getInt("idle-ticks")).build();
+            if(!isVanished(player)){
+                handleIdleState(player, data.getInt(WatutNetworkingBukkit.NBTDataPlayerIdleTicks));
+            }
+            data = CompoundBinaryTag.builder().put(data).putInt(WatutNetworkingBukkit.NBTDataPlayerTicksToGoIdle, WatutPlugin.getInstance().getConfiguration().getIdleTicks()).build();
         }
 
         if (data.keySet().contains(WatutNetworkingBukkit.NBTDataPlayerMouseX)) {
@@ -53,16 +58,34 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
         }
     }
 
-    public void handleIdleState(Player player, int idleTicks) {
+    public void handleIdleState(Player player, Integer idleTicks) {
         PlayerStatus status = getStatus(player);
-        if (Bukkit.getOnlinePlayers().size() > 1) {
-            if (idleTicks > WatutPlugin.getInstance().getConfig().getInt("idle-ticks")) {
-                if (!status.isIdle()) {
-                    Bukkit.getServer().broadcastMessage(player.getDisplayName() + " has gone idle");
-                }
-            } else {
-                if (status.isIdle()) {
-                    Bukkit.getServer().broadcastMessage(player.getDisplayName() + " is no longer idle");
+        if(WatutPlugin.getInstance().getConfiguration().isBroadcastEnabled()){
+            if (WatutPlugin.getInstance().getServer().getOnlinePlayers().size() - getNumberOfVanishedPlayers() > 1) {
+                if (idleTicks > WatutPlugin.getInstance().getConfiguration().getIdleTicks()) {
+                    if (!status.isIdle()) {
+                        String text = WatutPlugin.getInstance().getConfiguration().getIdleMessage();
+                        if(WatutPlugin.getInstance().isPlaceholderApiEnabled()){
+                            text = PlaceholderAPI.setPlaceholders(player, text);
+                        }
+                        else {
+                            text = text.replace("%player_name%", player.getName());
+                        }
+                        Component message = MiniMessage.miniMessage().deserialize(text);
+                        WatutPlugin.getInstance().adventure().players().sendMessage(message);
+                    }
+                } else {
+                    if (status.isIdle()) {
+                        String text = WatutPlugin.getInstance().getConfiguration().getBusyMessage();
+                        if(WatutPlugin.getInstance().isPlaceholderApiEnabled()){
+                            text = PlaceholderAPI.setPlaceholders(player, text);
+                        }
+                        else {
+                            text = text.replace("%player_name%", player.getName());
+                        }
+                        Component message = MiniMessage.miniMessage().deserialize(text);
+                        WatutPlugin.getInstance().adventure().players().sendMessage(message);
+                    }
                 }
             }
         }
@@ -74,5 +97,16 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
         for (Map.Entry<UUID, PlayerStatus> entry : lookupPlayerToStatus.entrySet()) {
             WatutNetworkingBukkit.serverSendToClientPlayer(entry.getValue().getNbtCache(), event.getPlayer());
         }
+    }
+
+    private boolean isVanished(Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
+    }
+
+    private int getNumberOfVanishedPlayers(){
+        return WatutPlugin.getInstance().getServer().getOnlinePlayers().stream().filter(this::isVanished).distinct().toArray().length;
     }
 }

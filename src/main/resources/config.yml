@@ -1,1 +1,24 @@
-idle-ticks: 6000
+# DO NOT CHANGE
+version: 1
+
+# Notify you about future updates!
+update: true
+
+idle:
+  # Number of ticks before a player is considered idle
+  ticks: 6000
+
+  # Settings for broadcasting idle messages
+  broadcast:
+    # Enable or disable broadcasting of idle messages (true or false)
+    enabled: false
+
+    # Messages to broadcast when a player goes idle or returns to busy
+    message:
+      # Message displayed when a player becomes idle
+      # If PlaceholderAPI is installed, this message will support placeholders like %player_name%
+      idle: "<white>%player_name% has gone idle"
+
+      # Message displayed when a player is no longer idle
+      # If PlaceholderAPI is installed, this message will support placeholders like %player_name%
+      busy: "<white>%player_name% is no longer idle"
