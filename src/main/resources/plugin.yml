@@ -11,5 +11,5 @@ commands:
   watut:
     description: "Reloads the WATUT plugin configuration file. Use this command to apply any changes made to the config without restarting the server."
     usage: /<command>
-    permission: op
+    permission: watut.reload
     permission-message: "You do not have permission to use this command."

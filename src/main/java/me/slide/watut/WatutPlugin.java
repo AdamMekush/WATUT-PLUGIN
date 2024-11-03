@@ -3,7 +3,6 @@ package me.slide.watut;
 import me.slide.watut.command.ReloadCommand;
 import me.slide.watut.config.Config;
 import me.slide.watut.network.WatutNetworkingBukkit;
-import me.slide.watut.util.UpdateChecker;
 import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -30,7 +29,6 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
     public Config config;
     private boolean isPlaceholderApiEnabled = false;
     private BukkitAudiences adventure;
-    private final UpdateChecker updateChecker = new UpdateChecker(this).setModrinthProjectId("watut-plugin");
 
     @Override
     public void onEnable() {
@@ -59,14 +57,6 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
         getServer().getPluginCommand("watut").setTabCompleter(reloadCommand);
 
         Metrics metrics = new Metrics(this, 23632);
-        if(config.checkUpdates()){
-            updateChecker.checkForUpdatesModrinth()
-                    .thenAccept(isOutdated -> {
-                        if (isOutdated) {
-                            adventure.console().sendMessage(updateChecker.getUpdateMessage().appendSpace().append(Component.text("https://modrinth.com/plugin/watut-plugin").color(TextColor.color(5635925))));
-                        }
-                    });
-        }
     }
 
     @Override
@@ -121,9 +111,5 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
         }
         return this.adventure;
-    }
-
-    public UpdateChecker getUpdateChecker() {
-        return updateChecker;
     }
 }
