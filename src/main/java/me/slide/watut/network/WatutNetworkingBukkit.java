@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static me.slide.watut.WatutPlugin.isAbove1_20_2OrEqual;
+import static me.slide.watut.util.Version.isAbove1_20_2OrEqual;
 
 public class WatutNetworkingBukkit {
 

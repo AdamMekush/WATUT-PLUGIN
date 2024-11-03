@@ -7,6 +7,8 @@ import me.slide.watut.util.UpdateChecker;
 import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -20,16 +22,19 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import static me.slide.watut.util.Version.isAbove1_20_2OrEqual;
+
 public final class WatutPlugin extends JavaPlugin implements PluginMessageListener {
 
     private final PlayerStatusManagerServer playerStatusManagerServer = new PlayerStatusManagerServer();
     public Config config;
     private boolean isPlaceholderApiEnabled = false;
     private BukkitAudiences adventure;
+    private final UpdateChecker updateChecker = new UpdateChecker(this).setModrinthProjectId("watut-plugin");
 
     @Override
     public void onEnable() {
-        saveResource("config.yml", false);
+        saveDefaultConfig();
         ConfigurationSerialization.registerClass(Config.class);
         config = Config.deserialize(getConfig().getValues(true));
 
@@ -55,10 +60,12 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
 
         Metrics metrics = new Metrics(this, 23632);
         if(config.checkUpdates()){
-            UpdateChecker updateChecker = new UpdateChecker(this).setModrinthProjectId("watut-plugin");
-            if(updateChecker.isOutdated()){
-                getLogger().warning("https://modrinth.com/plugin/watut-plugin");
-            }
+            updateChecker.checkForUpdatesModrinth()
+                    .thenAccept(isOutdated -> {
+                        if (isOutdated) {
+                            adventure.console().sendMessage(updateChecker.getUpdateMessage().appendSpace().append(Component.text("https://modrinth.com/plugin/watut-plugin").color(TextColor.color(5635925))));
+                        }
+                    });
         }
     }
 
@@ -93,14 +100,6 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
         return playerStatusManagerServer;
     }
 
-    public static boolean isAbove1_20_2OrEqual(){
-        String[] version = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
-        Integer major = parseIntOrNull(version[0]);
-        Integer minor = parseIntOrNull(version[1]);
-        Integer patch = parseIntOrNull(version[2]);
-        return (major > 1) || (major == 1 && (minor > 20 || (minor == 20 && (patch != null && patch >= 2))));
-    }
-
     public boolean isPlaceholderApiEnabled() {
         return isPlaceholderApiEnabled;
     }
@@ -124,11 +123,7 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
         return this.adventure;
     }
 
-    private static Integer parseIntOrNull(String str) {
-        try {
-            return (str != null) ? Integer.parseInt(str) : null;
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 }

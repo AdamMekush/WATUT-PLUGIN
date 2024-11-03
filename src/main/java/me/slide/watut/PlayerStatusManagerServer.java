@@ -94,8 +94,14 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
 
     @EventHandler
     public void playerLoggedIn(PlayerJoinEvent event){
+        Player player = event.getPlayer();
+        if(player.isOp() && !WatutPlugin.getInstance().getUpdateChecker().isPlayerNotified(event.getPlayer()) && WatutPlugin.getInstance().getConfiguration().checkUpdates()){
+            WatutPlugin.getInstance().adventure().player(player).sendMessage(WatutPlugin.getInstance().getUpdateChecker().getUpdateMessage());
+            WatutPlugin.getInstance().getUpdateChecker().markAsNotified(player);
+        }
+
         for (Map.Entry<UUID, PlayerStatus> entry : lookupPlayerToStatus.entrySet()) {
-            WatutNetworkingBukkit.serverSendToClientPlayer(entry.getValue().getNbtCache(), event.getPlayer());
+            WatutNetworkingBukkit.serverSendToClientPlayer(entry.getValue().getNbtCache(), player);
         }
     }
 
