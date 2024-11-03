@@ -29,9 +29,6 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
 
     @Override
     public void onEnable() {
-        getLogger().warning(Bukkit.getServer().getVersion());
-        getLogger().warning(Bukkit.getServer().getBukkitVersion());
-        getLogger().warning(Bukkit.getVersion());
         saveResource("config.yml", false);
         ConfigurationSerialization.registerClass(Config.class);
         config = Config.deserialize(getConfig().getValues(true));
@@ -97,11 +94,11 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
     }
 
     public static boolean isAbove1_20_2OrEqual(){
-        String version = Bukkit.getBukkitVersion();
-        String[] versionSplit = version.split("\\.");
-        int major = Integer.parseInt(versionSplit[0]);
-        int minor = Integer.parseInt(versionSplit[1]);
-        return (major > 1 || (major == 1 && minor >= 20 && version.contains("2")));
+        String[] version = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+        Integer major = parseIntOrNull(version[0]);
+        Integer minor = parseIntOrNull(version[1]);
+        Integer patch = parseIntOrNull(version[2]);
+        return (major > 1) || (major == 1 && (minor > 20 || (minor == 20 && (patch != null && patch >= 2))));
     }
 
     public boolean isPlaceholderApiEnabled() {
@@ -125,5 +122,13 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
         }
         return this.adventure;
+    }
+
+    private static Integer parseIntOrNull(String str) {
+        try {
+            return (str != null) ? Integer.parseInt(str) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
