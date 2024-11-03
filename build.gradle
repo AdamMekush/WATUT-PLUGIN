@@ -63,4 +63,5 @@ processResources {
 
 shadowJar {
     relocate("org.bstats", "me.slide.watut.metrics")
+    relocate("net.kyori.adventure", "me.slide.watut.adventure")
 }

@@ -43,7 +43,7 @@ public class UpdateChecker {
                 JsonArray versionsArray = gson.fromJson(reader, JsonArray.class);
                 reader.close();
 
-                if (!versionsArray.isEmpty()) {
+                if (versionsArray.size() > 0) {
                     JsonObject latestVersion = versionsArray.get(0).getAsJsonObject();
                     String latestVersionNumber = latestVersion.get("version_number").getAsString();
                     String currentVersion = plugin.getDescription().getVersion();
