@@ -17,8 +17,8 @@ idle:
     message:
       # Message displayed when a player becomes idle
       # If PlaceholderAPI is installed, this message will support placeholders like %player_name%
-      idle: "<white>%player_name% has gone idle"
+      idle: "<white>%player_name% has gone idle</white>"
 
       # Message displayed when a player is no longer idle
       # If PlaceholderAPI is installed, this message will support placeholders like %player_name%
-      busy: "<white>%player_name% is no longer idle"
+      busy: "<white>%player_name% is no longer idle</white>"

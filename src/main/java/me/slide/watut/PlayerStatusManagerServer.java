@@ -34,9 +34,7 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
         }
 
         if (data.keySet().contains(WatutNetworkingBukkit.NBTDataPlayerIdleTicks)) {
-            if(!isVanished(player)){
-                handleIdleState(player, data.getInt(WatutNetworkingBukkit.NBTDataPlayerIdleTicks));
-            }
+            handleIdleState(player, data.getInt(WatutNetworkingBukkit.NBTDataPlayerIdleTicks));
             data = CompoundBinaryTag.builder().put(data).putInt(WatutNetworkingBukkit.NBTDataPlayerTicksToGoIdle, WatutPlugin.getInstance().getConfiguration().getIdleTicks()).build();
         }
 
@@ -60,15 +58,18 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
 
     public void handleIdleState(Player player, Integer idleTicks) {
         PlayerStatus status = getStatus(player);
-        if(WatutPlugin.getInstance().getConfiguration().isBroadcastEnabled()){
+        if(!isVanished(player)){
+
+
+        }
+        if(WatutPlugin.getInstance().getConfiguration().isBroadcastEnabled()) {
             if (WatutPlugin.getInstance().getServer().getOnlinePlayers().size() - getNumberOfVanishedPlayers() > 1) {
                 if (idleTicks > WatutPlugin.getInstance().getConfiguration().getIdleTicks()) {
                     if (!status.isIdle()) {
                         String text = WatutPlugin.getInstance().getConfiguration().getIdleMessage();
-                        if(WatutPlugin.getInstance().isPlaceholderApiEnabled()){
+                        if (WatutPlugin.getInstance().isPlaceholderApiEnabled()) {
                             text = PlaceholderAPI.setPlaceholders(player, text);
-                        }
-                        else {
+                        } else {
                             text = text.replace("%player_name%", player.getName());
                         }
                         Component message = MiniMessage.miniMessage().deserialize(text);
@@ -77,10 +78,9 @@ public class PlayerStatusManagerServer extends PlayerStatusManager implements Li
                 } else {
                     if (status.isIdle()) {
                         String text = WatutPlugin.getInstance().getConfiguration().getBusyMessage();
-                        if(WatutPlugin.getInstance().isPlaceholderApiEnabled()){
+                        if (WatutPlugin.getInstance().isPlaceholderApiEnabled()) {
                             text = PlaceholderAPI.setPlaceholders(player, text);
-                        }
-                        else {
+                        } else {
                             text = text.replace("%player_name%", player.getName());
                         }
                         Component message = MiniMessage.miniMessage().deserialize(text);
