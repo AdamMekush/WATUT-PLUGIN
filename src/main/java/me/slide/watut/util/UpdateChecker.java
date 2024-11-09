@@ -85,7 +85,7 @@ public class UpdateChecker implements Listener {
             priority = EventPriority.MONITOR
     )
     public void onJoin(PlayerJoinEvent event) {
-        if (event.getPlayer().hasPermission("watut.updatenotify")) {
+        if (event.getPlayer().hasPermission("watut.updatenotify") && WatutPlugin.getInstance().getConfiguration().checkUpdates()) {
             WatutPlugin.getInstance().adventure().player(event.getPlayer()).sendMessage(Component.text("An update for WatutPlugin (v" + this.getModrinthVersion() + ") is available at:").appendSpace().append(Component.text("[MODRINTH]").decorate(TextDecoration.BOLD).color(TextColor.color(5635925)).clickEvent(ClickEvent.openUrl("https://modrinth.com/plugin/watut-plugin")).hoverEvent(HoverEvent.showText(Component.text("Click!")))).decorate(TextDecoration.UNDERLINED));
         }
 
