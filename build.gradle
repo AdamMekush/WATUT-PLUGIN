@@ -25,6 +25,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
     implementation("net.kyori:adventure-platform-facet:4.3.4")
     implementation("org.bstats:bstats-bukkit:3.0.2")
+    implementation("com.google.code.gson:gson:2.11.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
@@ -59,4 +60,5 @@ shadowJar {
     setArchiveClassifier("")
     relocate("org.bstats", "me.slide.watut.metrics")
     relocate("net.kyori", "me.slide.watut.libs.kyori")
+    relocate("com.google.code.gson", "me.slide.watut.libs.gson")
 }

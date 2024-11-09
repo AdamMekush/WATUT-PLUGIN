@@ -3,6 +3,7 @@ package me.slide.watut;
 import me.slide.watut.command.ReloadCommand;
 import me.slide.watut.config.Config;
 import me.slide.watut.network.WatutNetworkingBukkit;
+import me.slide.watut.util.UpdateChecker;
 import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -26,6 +27,7 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
     public Config config;
     private boolean isPlaceholderApiEnabled = false;
     private BukkitAudiences adventure;
+    private UpdateChecker updateChecker = new UpdateChecker(this);
 
     @Override
     public void onEnable() {
@@ -54,6 +56,9 @@ public final class WatutPlugin extends JavaPlugin implements PluginMessageListen
         getServer().getPluginCommand("watut").setTabCompleter(reloadCommand);
 
         Metrics metrics = new Metrics(this, 23632);
+        if(config.checkUpdates()){
+            updateChecker.fetch();
+        }
     }
 
     @Override
