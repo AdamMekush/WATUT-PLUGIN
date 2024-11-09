@@ -14,6 +14,7 @@ idle:
     enabled: false
 
     # Messages to broadcast when a player goes idle or returns to busy
+    # Support only MiniMessages!
     message:
       # Message displayed when a player becomes idle
       # If PlaceholderAPI is installed, this message will support placeholders like %player_name%

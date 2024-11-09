@@ -7,6 +7,14 @@ website: https://github.com/AdamMekush/WATUT-PLUGIN
 api-version: '1.16'
 softdepend: ["PlaceholderAPI"]
 
+permissions:
+  watut.reload:
+    description: "Allows reloading of the WatutPlugin configuration."
+    default: op
+  watut.updatenotify:
+    description: "Notifies the player about WatutPlugin updates."
+    default: op
+
 commands:
   watut:
     description: "Reloads the WATUT plugin configuration file. Use this command to apply any changes made to the config without restarting the server."
